@@ -84,7 +84,7 @@ fetch('get_past_orders/${user.id}`)
 
 ```
 
-The django backend can return all of the statuses within the current year
+The django backend can return all of the order within the current year
 
 ```
 def get_past_orders(request, user_id):
