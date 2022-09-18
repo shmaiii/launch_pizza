@@ -107,3 +107,23 @@ fetch(`update_status/${order_id}`, {
 })
 
 ```
+The server will receive the request and perform appropriate changes to the database:
+
+```
+def update_status(request, order_id):
+    order = Order.objects.get(pk=order_id)
+
+    if request.method == 'PUT':
+        data = json.loads(request.body)
+        if data.get("order") is not None:
+            status = data["status"]
+            order.status = status
+            order.save()
+
+            return HttpResponse(status = 204)
+    
+    return JsonResponse({
+        "error": "Not a PUT request"
+    }, status = 400)
+
+```
