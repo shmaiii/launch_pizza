@@ -1,6 +1,6 @@
 # Launch-Pizza API
 
-The functionality will be splitted into 2 ends - one end for the customers to send, track and see receipt of their orders, the other end for the pizze workers to monitor to see current orders and update status of each order. 
+The functionality will be splitted into 2 ends - one end for the customers to send, track and see receipt of their orders, the other end for the pizza workers to monitor to see current orders and update status of each order. 
 
 ## Tools: 
 Here the backend is built using Python's Django framework, which has a built-in database of sqlite.
@@ -58,7 +58,52 @@ def send_order(request):
 The customer can go to a tracking page. This page makes a GET request to retrieve all orders that belong to the current customer that has a status of anything but "complete"
 
 ```
-fetch(`/get_orders/${user.id}`)
+fetch(`/get_tracking_orders/${user.id}`)
 .then (reponse => response.json())
 .then (orders => setOrders(orders));
+```
+
+The backend side can return some JSonResponse like:
+
+```
+def get_tracking_orders(request, user_id):
+    user = User.objects.get(pk=user_id)
+    orders = Order.objects.filter(user=user).exclude(status="complete")
+
+    return JsonResponse([order.serialize() for order in orders], safe=False)
+```
+
+### Seeing past receipts up to one year:
+
+The customer can go to a past orders page which makes a GET request to retrieve all orders that have a status of complete
+
+```
+fetch('get_past_orders/${user.id}`)
+.then (response => response.json())
+.then (orders => setOrders(orders));
+
+```
+
+The django backend can return all of the statuses within the current year
+
+```
+def get_past_orders(request, user_id):
+    user = User.objects.get(pk=user_id)
+    orders = Order.objects.filter(user=user, order_time__year = datetime.datetime.now().year)
+
+    return JsonResponse([order.serialize() for order in orders], safe=False)
+```
+
+## Pizza store side:
+
+The pizza store should be able to view all current orders with a GET request, similar to the ones above. In addition to that, pizza workers should be able to update the status of an order for the customer to track. This can be done through a PUT request:
+
+```
+fetch(`update_status/${order_id}`, {
+    method: "PUT",
+    body: JSON.stringify({
+        status: new_status,
+    })
+})
+
 ```
