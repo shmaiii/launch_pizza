@@ -3,7 +3,7 @@
 The functionality will be splitted into 2 ends - one end for the customers to send, track and see receipt of their orders, the other end for the pizza workers to monitor to see current orders and update status of each order. 
 
 ## Tools: 
-Here the backend is built using Python's Django framework, which has a built-in database of sqlite.
+Here we assume that the backend is built using Python's Django framework, which has a built-in database of sqlite. Front-end is accomplished through the use of Javascript
 
 ## Models: 
 The backend needs to be able to create objects and retrieve these data from its associated database. The models are in a file called model.py includes:
